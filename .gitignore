@@ -1,2 +1,5 @@
-hardware/
+# tmp and IDE directories
+.vscode
+
+# Working directories
 software/
