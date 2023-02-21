@@ -1,5 +1,12 @@
-# tmp and IDE directories
+# various IDE and project directories
+.pio
 .vscode
 
 # Working directories
 software/
+
+# Temporary files
+**/tmp*
+
+# CAD projects
+**/*.FCStd*
