@@ -10,3 +10,4 @@ software/
 
 # CAD projects
 **/*.FCStd*
+**/*.iges
