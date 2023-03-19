@@ -1239,6 +1239,10 @@
     (stroke (width 0) (type default))
     (uuid ed9a7eb5-44e4-4348-9b77-64afaec4f438)
   )
+  (wire (pts (xy 106.68 83.82) (xy 156.21 83.82))
+    (stroke (width 0) (type default))
+    (uuid f0c8863d-7d0e-4ac4-aad0-874378b18369)
+  )
   (wire (pts (xy 57.15 36.83) (xy 45.72 36.83))
     (stroke (width 0) (type default))
     (uuid f6031bd0-ae39-4dba-8279-e448edcebc78)
@@ -1246,6 +1250,10 @@
   (wire (pts (xy 45.72 29.21) (xy 45.72 36.83))
     (stroke (width 0) (type default))
     (uuid f62d508e-2d47-484c-8a1a-aa95229f5fb0)
+  )
+  (wire (pts (xy 156.21 83.82) (xy 156.21 71.12))
+    (stroke (width 0) (type default))
+    (uuid fcec55cd-2a24-486f-bc2c-15339947f312)
   )
 
   (symbol (lib_id "Diode:1N4148") (at 30.48 36.83 90) (unit 1)
@@ -1389,6 +1397,31 @@
       (project "rollie"
         (path "/21ef0648-144d-4869-9598-e74abff26616"
           (reference "J6") (unit 1)
+        )
+      )
+    )
+  )
+
+  (symbol (lib_id "Connector:Conn_01x01_Socket") (at 101.6 83.82 180) (unit 1)
+    (in_bom yes) (on_board yes) (dnp no)
+    (uuid 9b6d3387-9afc-40d9-80a1-b95a38b915ad)
+    (property "Reference" "J8" (at 99.06 83.82 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Value" "Probe" (at 104.14 81.28 0)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Footprint" "" (at 101.6 83.82 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (at 101.6 83.82 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (pin "1" (uuid c825c422-2253-4437-aeb9-e6e4fbf1986f))
+    (instances
+      (project "rollie"
+        (path "/21ef0648-144d-4869-9598-e74abff26616"
+          (reference "J8") (unit 1)
         )
       )
     )
