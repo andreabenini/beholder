@@ -3,7 +3,10 @@
 .vscode
 
 # Working directories
-software/
+software/server
+software/contrib
+software/ESP32*
+software/*.md
 
 # Temporary files
 **/tmp*
