@@ -4,6 +4,15 @@
 
   (paper "A4")
 
+  (title_block
+    (title "Rollie Robot Schematics")
+    (date "2023-03-26")
+    (rev "1.0")
+    (company "Ben")
+    (comment 1 "                   overall schematics and circuitry")
+    (comment 3 "                   Rollie Schematics")
+  )
+
   (lib_symbols
     (symbol "Conn_01x01_Socket_1" (pin_numbers hide) (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
       (property "Reference" "J" (at 0 2.54 0)
@@ -1576,6 +1585,14 @@
     (uuid fe329db3-1291-454d-bcda-77dda240f136)
   )
 
+  (text_box "Green Light\n- ON  (Relay OFF)\n- OFF (Relay ON)"
+    (at 70.485 32.385 0) (size 13.97 4.445)
+    (stroke (width 0.1) (type default) (color 132 0 0 1))
+    (fill (type color) (color 255 251 183 1))
+    (effects (font (size 0.75 0.75) (color 132 0 0 1)) (justify left top))
+    (uuid 7e1d7c95-dc5a-4c3e-a112-2890bf001be3)
+  )
+
   (hierarchical_label "FTDI Programmer" (shape input) (at 203.2 36.83 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid f638e17e-c30d-4b43-a628-381fad0aee4d)
@@ -1905,7 +1922,7 @@
   (symbol (lib_id "Relay:DIPxx-1Cxx-51x") (at 64.77 44.45 90) (unit 1)
     (in_bom yes) (on_board yes) (dnp no)
     (uuid 9f8c43d8-f0a3-48ca-85d3-71cd44ca9dd6)
-    (property "Reference" "K1" (at 64.77 33.02 90)
+    (property "Reference" "K1" (at 60.96 33.02 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Value" "DIPxx-1Cxx-51x" (at 64.77 33.02 90)
@@ -1921,6 +1938,9 @@
       (effects (font (size 1.27 1.27)))
     )
     (property "NO" "NO" (at 57.15 35.56 90)
+      (effects (font (size 1.27 1.27)))
+    )
+    (property "Field6" "Relay" (at 67.31 33.02 90)
       (effects (font (size 1.27 1.27)))
     )
     (pin "1" (uuid 03f7a2e1-1938-439f-8200-2fa9be5d5be5))
