@@ -4,6 +4,9 @@
 #include <Servo.h>
 
 
+#define ANGLE_MIN 10
+#define ANGLE_MAX 160
+
 void servoInit();
 void servoMove(uint8_t angle);
 
