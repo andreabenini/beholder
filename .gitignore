@@ -13,4 +13,5 @@ software/*.md
 
 # CAD projects
 **/*.FCStd*
+**/*.FCBak
 **/*.iges
