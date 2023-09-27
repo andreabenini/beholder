@@ -1,1 +1,0 @@
-# Hardware Revisions for Rollie
