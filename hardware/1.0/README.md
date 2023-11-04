@@ -1,1 +1,0 @@
-Hardware designs, CAD, Electronics
