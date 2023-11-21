@@ -16,3 +16,10 @@
 |------------|--------------------| ------: |
 | Camera     | Native             | **ALL** |
 | Serial     | Dedicated RX/TX    | 2       |
+
+
+
+# External Links
+- https://www.ebay.com/itm/384893528800
+
+
