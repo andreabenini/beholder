@@ -2,14 +2,27 @@
 
 
 // Program defines
+#include "main.h"
 #include "motor.h"
 
 
 #define SYSTEM_LED 13
 #define BUFFER_LEN 100
 char    buffer[BUFFER_LEN],
-        commandString[BUFFER_LEN];
-bool    commandDetected;
+        bufferInput[BUFFER_LEN];
+
+
+const char PROGMEM CMD_VERSION[]    = "version";
+const char PROGMEM CMD_HELP[]       = "help";
+const char PROGMEM CMD_MOTOR[]      = "motor";
+
+const char PROGMEM STR_READY[]      = "READY Type 'help' for commands";
+const char PROGMEM STR_ERROR[]      = "ERROR: ";
+const char PROGMEM STR_VERSION[]    = "version 1.0";
+const char PROGMEM STR_HELP[]       = "Commands:\n"
+                                      "  help\n"
+                                      "  version\n"
+                                      "  motor 0|1|2 0..100 0|1";
 
 
 /**
@@ -17,76 +30,81 @@ bool    commandDetected;
  * @return (void)
  */
 void commandDetect() {
-    if (commandDetected) {
-        char *command;
-        command = strtok(commandString, " ");
-        if (!strcmp(command, "version")) {
-            Serial.println("Version 1.0");
+    char *command;
+    memcpy(bufferInput, buffer, strlen(buffer)+1);
+    command = strtok(bufferInput, " ");
+    // cmd: version
+    if (!strcmp_P(command, CMD_VERSION)) {
+        Serial.println((const __FlashStringHelper *)STR_VERSION);
 
-        } else if (!strcmp(command, "help")) {
-            Serial.println("Available commands:");
-            Serial.println("help\r\nversion");
+    // cmd: help
+    } else if (!strcmp_P(command, CMD_HELP)) {
+        Serial.println((const __FlashStringHelper *)STR_HELP);
 
-        } else if (!strcmp(command, "cam")) {
-            uint8_t angle = atoi(strtok(NULL, " "));
-            if (angle > 0) {
-                // servoMove(angle);
-                Serial.println("ok");
-            } else {
-                Serial.println("ko");
+    // cmd: motor [0|1|2] [0..100: dutyCycle] [0|1: forward(default)|backward]
+    } else if (!strcmp_P(command, CMD_MOTOR)) {
+        byte motorN    = atoi(strtok(NULL, " "));
+        byte dutyCycle = atoi(strtok(NULL, " "));
+        byte forward   = atoi(strtok(NULL, " "));
+        if (motorN > 2) {
+            Serial.print((const __FlashStringHelper *)STR_ERROR);
+            Serial.println(buffer);
+        } else {
+            if (dutyCycle > 100) {
+                dutyCycle = 0;
             }
-
-        } else if (!strcmp(command, "temp")) {
-            Serial.println("TEMP command detected");
+            motor(motorN, dutyCycle, forward==0? true: false);
         }
-        memset(commandString, 0x00, sizeof(commandString));
-        commandDetected = false;
+
+    // Error //
+    } else {
+        Serial.print((const __FlashStringHelper *)STR_ERROR);
+        Serial.println(buffer);
     }
+    memset(buffer,      0x00, sizeof(buffer));
+    memset(bufferInput, 0x00, sizeof(bufferInput));
 } /**/
 
+void blink(int8_t times) {
+    for (int8_t i=0; i<times; i++) {
+        digitalWrite(SYSTEM_LED, HIGH);
+        delay(500);
+        digitalWrite(SYSTEM_LED, LOW);
+        delay(500);     
+    }
+} /**/
 
 /**
  * Arduino constructor
  */
 void setup() {
     Serial.begin(9600);
-    memset(buffer,        0x00, sizeof(buffer));
-    memset(commandString, 0x00, sizeof(commandString));
-    commandDetected = false;
-    // servoInit();
-    // powerInit();
+    Serial.println((const __FlashStringHelper *)STR_READY);
+    memset(buffer,      0x00, sizeof(buffer));
+    memset(bufferInput, 0x00, sizeof(bufferInput));
     pinMode(SYSTEM_LED, OUTPUT);
+    blink(3);
 } /**/
-
 
 /**
  * Arduino loop
  */
 void loop() {
     // Serial port command detection
-    while (Serial.available() && !commandDetected) {
-        int byte = Serial.read();
-        if (byte > 0) {
-            if (byte == 0x0D) {
-                commandDetected = true;
-                memcpy(commandString, buffer, strlen(buffer)+1);
-                memset(buffer, 0x00, sizeof(buffer));
-            } else {
-                char ch = (char)byte;
-                strncat(buffer, &ch, 1);
-            }
+    while (Serial.available()) {
+        byte byte = Serial.read();
+        switch (byte) {
+        case 0:
+        case 0x0A:
+            break;
+        case 0x0D:
+            commandDetect();
+            break;
+        default:
+            char ch = (char)byte;
+            strncat(buffer, &ch, 1);
+            break;
         }
     }
-    commandDetect();
-
-
-    digitalWrite(SYSTEM_LED, HIGH);   // turn the LED on
-    delay(100);               // wait for a second
-    digitalWrite(SYSTEM_LED, LOW);    // turn the LED off
-    delay(100);     
-
-    // powerExternal(powerDetected());
-
-    // dot();  // FIXME: remove when done, let's also see if delay below is strictly needed
-    // delay(500);
+    delay(500);
 } /**/
