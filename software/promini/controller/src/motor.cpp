@@ -20,5 +20,9 @@ void motor(uint8_t motorNumber, int8_t dutyCycle, bool forward=true) {
     case 2:
         Serial.print(motorNumber);
         break;
-    }    
+    }
+    
+    char buffer[200];
+    sprintf(buffer, "Motor:%d, duty:%d, direction:%d", motor, dutyCycle, forward);
+    Serial.println(buffer);
 } /**/
