@@ -4,10 +4,10 @@
 
 
 // Motor control input pinout
-#define MOTOR1_IN_1     9
-#define MOTOR1_IN_2     6
-#define MOTOR2_IN_3     5
-#define MOTOR2_IN_4     3
+#define MOTOR1_IN_1     10
+#define MOTOR1_IN_2     9
+#define MOTOR2_IN_3     6
+#define MOTOR2_IN_4     5
 
 
 void motorInit();
