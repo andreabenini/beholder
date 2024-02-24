@@ -27,8 +27,8 @@ void motorPWM(int8_t dutyCycle, uint8_t pin1, uint8_t pin2) {
         analogWrite(pin2, pwm);
         sprintf(buffer, "\npin1[%d]:LOW, pin2[%d]:%d", pin1, pin2, pwm);
     } else {                    // Stop or forward
-        digitalWrite(pin1, pwm);
-        analogWrite(pin2, LOW);
+        digitalWrite(pin2, LOW);
+        analogWrite(pin1, pwm);
         sprintf(buffer, "\npin1[%d]:%d, pin2[%d]:LOW", pin1, pwm, pin2);
     }
     Serial.println(buffer);

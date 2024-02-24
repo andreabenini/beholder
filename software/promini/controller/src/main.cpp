@@ -14,7 +14,8 @@ char    buffer[BUFFER_LEN],
 
 const char PROGMEM CMD_VERSION[]    = "version";
 const char PROGMEM CMD_HELP[]       = "help";
-const char PROGMEM CMD_MOTOR[]      = "motor";
+const char PROGMEM CMD_MOTOR1[]     = "motor";      // [motor|m] are the same command
+const char PROGMEM CMD_MOTOR2[]     = "m";
 
 const char PROGMEM STR_READY[]      = "READY Type 'help' for commands";
 const char PROGMEM STR_ERROR[]      = "ERROR: ";
@@ -41,8 +42,8 @@ void commandDetect() {
     } else if (!strcmp_P(command, CMD_HELP)) {
         Serial.println((const __FlashStringHelper *)STR_HELP);
 
-    // cmd: motor [0|1|2] [0..100: dutyCycle] [0|1: forward(default)|backward]
-    } else if (!strcmp_P(command, CMD_MOTOR)) {
+    // cmd: [motor|m] [0|1|2] [0..100: dutyCycle] [0|1: forward(default)|backward]
+    } else if (!strcmp_P(command, CMD_MOTOR1) || !strcmp_P(command, CMD_MOTOR2)) {
         byte motorN    = atoi(strtok(NULL, " "));
         byte dutyCycle = atoi(strtok(NULL, " "));
         byte forward   = atoi(strtok(NULL, " "));
@@ -53,7 +54,7 @@ void commandDetect() {
             if (dutyCycle > 100) {
                 dutyCycle = 0;
             }
-            motor(motorN, dutyCycle, forward==0? true: false);
+            motor(motorN, forward==1? -dutyCycle: dutyCycle);
         }
 
     // Error //
