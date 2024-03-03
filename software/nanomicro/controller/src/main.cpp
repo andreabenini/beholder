@@ -16,6 +16,7 @@ const char PROGMEM CMD_VERSION[]    = "version";
 const char PROGMEM CMD_HELP[]       = "help";
 const char PROGMEM CMD_MOTOR1[]     = "motor";      // [motor|m] are the same command
 const char PROGMEM CMD_MOTOR2[]     = "m";
+const char PROGMEM CMD_MOTOR3[]     = "m0";         // m0 works on both motors at the same time
 
 const char PROGMEM STR_READY[]      = "READY Type 'help' for commands";
 const char PROGMEM STR_ERROR[]      = "ERROR: ";
@@ -23,7 +24,8 @@ const char PROGMEM STR_VERSION[]    = "version 1.0";
 const char PROGMEM STR_HELP[]       = "Commands:\n"
                                       "  help\n"
                                       "  version\n"
-                                      "  motor 0|1|2 0..100 0|1";
+                                      "  m0 0..100 0..100 0|1\n"        // m0 <dutyCycle M1> <dutyCycle M2> [0|1: forward|backward]
+                                      "  m|motor 0|1|2 0..100 0|1";     // motor <0|1|2> <dutyCycle> [0|1: forward|backward]
 
 
 /**
@@ -56,6 +58,20 @@ void commandDetect() {
             }
             motor(motorN, forward==1? -dutyCycle: dutyCycle);
         }
+
+    // cmd: <m0: bothMotors> [0..100: dutyCycle motor1] [0..100: dutyCycle motor2] [0|1: forward(default)|backward]
+    } else if (!strcmp_P(command, CMD_MOTOR3)) {
+        byte dutyCycle1 = atoi(strtok(NULL, " "));
+        byte dutyCycle2 = atoi(strtok(NULL, " "));
+        byte forward    = atoi(strtok(NULL, " "));
+        if (dutyCycle1 > 100) {
+            dutyCycle1 = 0;
+        }
+        if (dutyCycle2 > 100) {
+            dutyCycle2 = 0;
+        }
+        motor(1, forward==1? -dutyCycle1: dutyCycle1);
+        motor(2, forward==1? -dutyCycle2: dutyCycle2);
 
     // Error //
     } else {
