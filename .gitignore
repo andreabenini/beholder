@@ -14,7 +14,7 @@ software/esp32/master/build
 # old working config
 software/server
 
-software/esp32
+# software/esp32
 software/samples
 software/contrib
 software/ESP32*
