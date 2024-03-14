@@ -2,29 +2,33 @@
 .pio
 .vscode
 
-# Schematics
-*.kicad*
-fp-info-cache
-
-downloads
-# Working directories
+# esp-cam main project, ignore working directories
 software/esp32/master/.devcontainer
 software/esp32/master/build
 
-# old working config
+# esp OTA python sample server for uploading the firmware
+software/esp32/ota_server/*/
+software/esp32/ota_server/lib64
+software/esp32/ota_server/*.*
+
+
+# TODO: remove old working config
 software/server
 
-# software/esp32
+# exclude software/esp32 samples
 software/samples
 software/contrib
 software/ESP32*
 software/hello*
 software/*.md
-
-# Temporary files
+# Temporary files, tests, download directories
 **/tmp*
+downloads
 
 # CAD projects
 **/*.FCStd*
 **/*.FCBak
 **/*.iges
+# Ignore kickad schematics
+*.kicad*
+fp-info-cache
