@@ -48,7 +48,7 @@ idf.py build
   - Select Python version: **/usr/bin/python**
 - Close then window when all settings have been configured
 
-
+# Project Management
 ## Project Setup
 For every project, by default, IntelliSense is present, but the environment may not give
 any indication if there is a problem. To fix that:
@@ -78,4 +78,9 @@ To create a new ESP-IDF project just:
   line appears beneath that code
 - Press button "ESP-IDF Build project" _(Ctrl+E, B)_ in the bottom bar to create the initial build
 
----
+## Partitions information
+From the shell in a properly set ESP-IDF terminal you can see current and active partition table
+suitable for the device
+```sh
+idf.py partition-table
+```
