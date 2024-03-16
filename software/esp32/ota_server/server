@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# @description      forklift - Container friendly CLI utility
+#
+# @author           Andrea Benini
+# @date             2023-11-07
+# @license          GNU Affero General Public License v3.0
+# @see              CLI/GUI utility for dealing with local containers
+#                   in your favorite local runtime environment (podman, docker)
+#
+# pyright: reportMissingImports=false
+#
+import sys
+try:
+    from flask import Flask, send_file
+except Exception as E:
+    print(f"Error while importing modules:\n{str(E)}\nAborting program\n\n")
+    sys.exit(1)
+
+app = Flask(__name__)
+
+# Route to serve firmware file
+@app.route('/update')
+def serve_firmwareupdate():
+    return send_file('./firmware.bin', as_attachment=True)
+@app.route('/firmware')
+def serve_firmware():
+    return send_file('./firmware.bin', as_attachment=True)
+
+if __name__ == '__main__':
+    print("\n==============================================\nBasic OTA server\n    Listening on: http://localhost:8000 \n==============================================\n")
+    print("     /update      -> Download firmware.bin")
+    print("     /firmware    -> Download firmware.bin")
+    print("\n")
+    app.run(host='0.0.0.0', port=8000)  # Run the server on all available network interfaces, port 8000
