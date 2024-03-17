@@ -31,7 +31,23 @@ idf.py partition-table
 python $IDF_PATH/components/esptool_py/esptool/esptool.py --chip esp32 --port /dev/ttyUSB0 write_flash 0x110000 ./build/server.bin
 ```
 
-### Flashing software (on partition OTA_0 only)
+### Flashing software
 ```sh
-python $IDF_PATH/components/esptool_py/esptool/esptool.py --port /dev/ttyUSB0 --baud 460800 --chip esp32 write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB 0x50000 ./image/partition.ota0.bin
+export PORT=/dev/$(dmesg |grep -E 'pl2303.*ttyUSB' | awk '{print $NF}')
+
+# Partition OTA_0 only
+python $IDF_PATH/components/esptool_py/esptool/esptool.py --port $PORT --baud 460800 --chip esp32 write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB 0x50000 ./image/partition.ota0.bin
+
+# Completely erase the MCU flash
+python $IDF_PATH/components/esptool_py/esptool/esptool.py --port $PORT --baud 460800 --before default_reset --after hard_reset --chip esp32 erase_flash
+
+# Init MCU with all my default values
+python $IDF_PATH/components/esptool_py/esptool/esptool.py   \
+    --port $PORT --baud 460800 --chip esp32 write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB   \
+    0x1000  ./image/bootloader.bin          \
+    0x8000  ./image/partition-table.bin     \
+    0xd000  ./image/ota_data_initial.bin    \
+    0x10000 ./image/partition.factory.bin   \
+    0x50000 ./build/server.bin
+
 ```
