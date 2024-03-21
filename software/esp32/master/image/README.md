@@ -33,7 +33,7 @@ python $IDF_PATH/components/esptool_py/esptool/esptool.py --chip esp32 --port /d
 
 ### Flashing software
 ```sh
-export PORT=/dev/$(dmesg |grep -E 'pl2303.*ttyUSB' | awk '{print $NF}')
+export PORT=/dev/$(dmesg | grep -E 'pl2303.*ttyUSB' | tail -n 1 | awk '{print $NF}'); echo $PORT
 
 # Partition OTA_0 only
 python $IDF_PATH/components/esptool_py/esptool/esptool.py --port $PORT --baud 460800 --chip esp32 write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB 0x50000 ./image/partition.ota0.bin
@@ -41,7 +41,8 @@ python $IDF_PATH/components/esptool_py/esptool/esptool.py --port $PORT --baud 46
 # Completely erase the MCU flash
 python $IDF_PATH/components/esptool_py/esptool/esptool.py --port $PORT --baud 460800 --before default_reset --after hard_reset --chip esp32 erase_flash
 
-# Init MCU with all my default values
+# Init MCU with all my default values (dir: ~beholder/software/esp32/master)
+export PORT=/dev/$(dmesg | grep -E 'pl2303.*ttyUSB' | tail -n 1 | awk '{print $NF}'); echo "Flashing on $PORT port"
 python $IDF_PATH/components/esptool_py/esptool/esptool.py   \
     --port $PORT --baud 460800 --chip esp32 write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB   \
     0x1000  ./image/bootloader.bin          \
