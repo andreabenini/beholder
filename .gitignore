@@ -8,18 +8,13 @@ software/esp32/master/build
 
 # esp OTA python sample server for uploading the firmware
 software/esp32/ota_server/*/
-software/esp32/ota_server/lib64
 software/esp32/ota_server/*.*
+software/esp32/ota_server/lib64
+!software/esp32/ota_server/README.md
 
-
-# TODO: remove old working config
-software/server
 
 # exclude software/esp32 samples
 software/samples
-software/contrib
-software/ESP32*
-software/hello*
 software/*.md
 # Temporary files, tests, download directories
 **/tmp*
@@ -29,6 +24,7 @@ downloads
 **/*.FCStd*
 **/*.FCBak
 **/*.iges
-# Ignore kickad schematics
+# Ignore kicad schematics
 *.kicad*
+beholder-backups
 fp-info-cache
