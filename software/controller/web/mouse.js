@@ -1,22 +1,26 @@
 /**
- * WebSocket
- * @param {*} x 
- * @param {*} y 
- * @param {*} speed 
- * @param {*} angle 
+ * Globals
  */
-// FIXME: Websocket connection
-// var connection = new WebSocket('ws://' + "192.168.4.1" + ':81/', ['arduino']);
-// connection.onopen = function () {
-//     connection.send('Connect ' + new Date());
-// };
-// connection.onerror = function (error) {
-//     console.log('WebSocket Error ', error);
-//     alert('WebSocket Error ', error);
-// };
-// connection.onmessage = function (e) {
-//     console.log('Server: ', e.data);
-// };
+const server = "192.168.0.230"
+
+var canvas, ctx, container;
+var width, height, radius, x_orig, y_orig;
+let coord = { x: 0, y: 0 };
+let paint = false;
+
+
+// Websocket connection
+var connection = new WebSocket('ws://' + server + ':80/', ['ws']);
+connection.onopen = function () {
+    connection.send('Connect ' + new Date());
+};
+connection.onerror = function (error) {
+    console.log('WebSocket Error ', error);
+    alert('WebSocket Error ', error);
+};
+connection.onmessage = function (e) {
+    console.log('Server: ', e.data);
+};
 function send(x,y,speed,angle){
     var data = {"x":x,"y":y,"speed":speed,"angle":angle};
     data = JSON.stringify(data);
@@ -25,15 +29,9 @@ function send(x,y,speed,angle){
 }
 
 
-/**
- * Globals
- */
-var canvas, ctx, container;
-var width, height, radius, x_orig, y_orig;
-let coord = { x: 0, y: 0 };
-let paint = false;
-
 window.addEventListener('load', () => {
+    const streamElement = document.getElementById('videostream');
+    streamElement.src = "http://"+server+"/video";
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');          
     container = canvas.parentNode;
