@@ -14,9 +14,9 @@ char    buffer[BUFFER_LEN],
 
 const char PROGMEM CMD_VERSION[]    = "version";
 const char PROGMEM CMD_HELP[]       = "help";
-const char PROGMEM CMD_MOTOR1[]     = "motor";      // [motor|m] are the same command
+const char PROGMEM CMD_MOTOR1[]     = "motor";                          // [motor|m] are the same command
 const char PROGMEM CMD_MOTOR2[]     = "m";
-const char PROGMEM CMD_MOTOR3[]     = "m0";         // m0 works on both motors at the same time
+const char PROGMEM CMD_MOTOR3[]     = "m0";                             // m0 works on both motors at the same time
 
 const char PROGMEM STR_READY[]      = "READY Type 'help' for commands";
 const char PROGMEM STR_ERROR[]      = "ERROR: ";
@@ -24,8 +24,8 @@ const char PROGMEM STR_VERSION[]    = "version 1.0";
 const char PROGMEM STR_HELP[]       = "Commands:\n"
                                       "  help\n"
                                       "  version\n"
-                                      "  m0 0..100 0..100 0|1\n"        // m0 <dutyCycle M1> <dutyCycle M2> [0|1: forward|backward]
-                                      "  m|motor 0|1|2 0..100 0|1";     // motor <0|1|2> <dutyCycle> [0|1: forward|backward]
+                                      "  m0 -100..100 -100..100\n"      // m0 <dutyCycle M1> <dutyCycle M2>     [-100: full backward, 0: stop, 100: full forward]
+                                      "  m|motor 0|1|2 -100..100";      // motor <0|1|2> <dutyCycle>            [-100: full backward, 0: stop, 100: full forward]
 
 
 /**
@@ -35,48 +35,51 @@ const char PROGMEM STR_HELP[]       = "Commands:\n"
 void commandDetect() {
     char *command;
     memcpy(bufferInput, buffer, strlen(buffer)+1);
+    bufferInput[strlen(buffer)] = '\0';
     command = strtok(bufferInput, " ");
+
+    // cmd: <m0: bothMotors> [-100..0..100: DutyCycle Motor1] [-100..0..100: DutyCycle Motor2]
+    if (!strcmp_P(command, CMD_MOTOR3)) {
+        int dutyCycle1 = atoi(strtok(NULL, " "));
+        int dutyCycle2 = atoi(strtok(NULL, " "));
+        if (dutyCycle1 < -100 || dutyCycle1 > 100) {
+            dutyCycle1 = 0;
+        }
+        if (dutyCycle2 < -100 || dutyCycle2 > 100) {
+            dutyCycle2 = 0;
+        }
+        motor(1, dutyCycle1);
+        Serial.print(" ");
+        motor(2, dutyCycle2);
+        Serial.println();
+
+    // cmd: [motor|m] [0|1|2] [-100..0..100: DutyCycle Motor]
+    } else if (!strcmp_P(command, CMD_MOTOR1) || !strcmp_P(command, CMD_MOTOR2)) {
+        byte motorN    = atoi(strtok(NULL, " "));
+        int  dutyCycle = atoi(strtok(NULL, " "));
+        if (motorN > 2) {
+            Serial.print((const __FlashStringHelper *)STR_ERROR);
+            Serial.println(buffer);
+        } else {
+            if (dutyCycle < -100 || dutyCycle > 100) {
+                dutyCycle = 0;
+            }
+            motor(motorN, dutyCycle);
+            Serial.println();
+        }
+
     // cmd: version
-    if (!strcmp_P(command, CMD_VERSION)) {
+    } else if (!strcmp_P(command, CMD_VERSION)) {
         Serial.println((const __FlashStringHelper *)STR_VERSION);
 
     // cmd: help
     } else if (!strcmp_P(command, CMD_HELP)) {
         Serial.println((const __FlashStringHelper *)STR_HELP);
 
-    // cmd: [motor|m] [0|1|2] [0..100: dutyCycle] [0|1: forward(default)|backward]
-    } else if (!strcmp_P(command, CMD_MOTOR1) || !strcmp_P(command, CMD_MOTOR2)) {
-        byte motorN    = atoi(strtok(NULL, " "));
-        byte dutyCycle = atoi(strtok(NULL, " "));
-        byte forward   = atoi(strtok(NULL, " "));
-        if (motorN > 2) {
-            Serial.print((const __FlashStringHelper *)STR_ERROR);
-            Serial.println(buffer);
-        } else {
-            if (dutyCycle > 100) {
-                dutyCycle = 0;
-            }
-            motor(motorN, forward==1? -dutyCycle: dutyCycle);
-        }
-
-    // cmd: <m0: bothMotors> [0..100: dutyCycle motor1] [0..100: dutyCycle motor2] [0|1: forward(default)|backward]
-    } else if (!strcmp_P(command, CMD_MOTOR3)) {
-        byte dutyCycle1 = atoi(strtok(NULL, " "));
-        byte dutyCycle2 = atoi(strtok(NULL, " "));
-        byte forward    = atoi(strtok(NULL, " "));
-        if (dutyCycle1 > 100) {
-            dutyCycle1 = 0;
-        }
-        if (dutyCycle2 > 100) {
-            dutyCycle2 = 0;
-        }
-        motor(1, forward==1? -dutyCycle1: dutyCycle1);
-        motor(2, forward==1? -dutyCycle2: dutyCycle2);
-
     // Error //
     } else {
         Serial.print((const __FlashStringHelper *)STR_ERROR);
-        Serial.println(buffer);
+        Serial.println(command);
     }
     memset(buffer,      0x00, sizeof(buffer));
     memset(bufferInput, 0x00, sizeof(bufferInput));
@@ -92,7 +95,7 @@ void blink(int8_t times) {
 } /**/
 
 /**
- * Arduino constructor
+ * Constructor
  */
 void setup() {
     Serial.begin(9600);
@@ -104,7 +107,7 @@ void setup() {
 } /**/
 
 /**
- * Arduino loop
+ * Main loop
  */
 void loop() {
     // Serial port command detection
@@ -119,7 +122,11 @@ void loop() {
             break;
         default:
             char ch = (char)byte;
-            strncat(buffer, &ch, 1);
+            if (strlen(buffer) < BUFFER_LEN-1) {
+                strncat(buffer, &ch, 1);
+            } else {
+                memset(buffer, 0x00, BUFFER_LEN);
+            }
             break;
         }
     }
