@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# @description      forklift - Container friendly CLI utility
+# @description      OTA (Over The Air) Firmware Updater Utility
 #
 # @author           Andrea Benini
-# @date             2023-11-07
+# @date             2024-01-07
 # @license          GNU Affero General Public License v3.0
-# @see              CLI/GUI utility for dealing with local containers
-#                   in your favorite local runtime environment (podman, docker)
+# @see              Simple builtin webserver for providing OTA 
+#                   firmware updates to beholder robots
 #
 # pyright: reportMissingImports=false
 #
