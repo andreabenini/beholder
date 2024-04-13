@@ -98,7 +98,7 @@ void blink(int8_t times) {
  * Constructor
  */
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
     Serial.println((const __FlashStringHelper *)STR_READY);
     memset(buffer,      0x00, sizeof(buffer));
     memset(bufferInput, 0x00, sizeof(bufferInput));
