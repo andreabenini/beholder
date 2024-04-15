@@ -10,7 +10,8 @@ const CURSORCOLORINNER  = '#F08080';
 const CURSORTOLERANCE   = 1;
 
 // Cursor radius from the center
-const RADIUS            = 200;
+//const 
+RADIUS            = 200;
 
 // Min/Max speed value (DutyCycle to apply)
 const THROTTLE          = 100;

@@ -13,13 +13,12 @@
     <link rel="icon" href="favicon.png">
     <link rel="stylesheet" href="/index.css">
     <!-- Scripts -->
-    <script src="./js/color-modes.js"></script>
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/color-modes.js"></script>
 
     <script src="configuration.js"></script>
     <script src="controller.js"></script>
-    <script type="text/javascript" src="https://livejs.com/live.js"></script>   <!-- TODO: Remove once done -->
 </head>
 <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -83,21 +82,31 @@
     <!-- navbar -->
     <nav class="navbar bg-body-tertiary pagenavbar">
         <div class="container-fluid pagenavbar">
-            <!-- Hamburger Menu -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
             <!-- Logo -->
-            <div class="d-flex align-items-center">
-                <img src="logo.png" alt="logo" class="d-inline-block align-text-top page-icon"
-                     data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-brand">beholder controller</span>
+            <div class="btn-group">
+                <button class="btn btn-sm dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="logo.png" alt="logo" class="d-inline-block align-text-top page-icon" data-toggle="collapse" data-target="#navbarSupportedContent" 
+                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-brand">beholder controller</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-sm controllerbuttons" id="connect">
+                            <i class="bi bi-plugin"></i> Reconnect
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="btn btn-sm controllerbuttons" id="videorefresh">
+                            <i class="bi bi-arrow-repeat"></i> Video Refresh
+                        </button>
+                    </li>
+                </ul>
             </div>
             <!-- Center label -->
             <span class="navbar-text mx-auto">
                 &nbsp;
             </span>
-
+            <!-- Coordinate system -->
             <ul class="nav" style="padding-right: 80px;">
                 <li class="nav-item coordinates">X <span id="xCoordinate"></span></li>
                 <li class="nav-item coordinates">Y <span id="yCoordinate"></span></li>
@@ -133,8 +142,6 @@
             </div>
         </div>
     </div>
-
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         console.log("Page loaded");
     </script>

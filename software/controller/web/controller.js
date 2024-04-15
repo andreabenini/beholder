@@ -64,6 +64,10 @@ function initWebSocket() {
         wsHandle.Locked = false;
     }; /**/
     wsHandle.onopen = function () {
+        if (wsHandle==null) {
+            setTimeout(initWebSocket, 5000);
+            return;
+        }
         wsHandle.Locked = true;
         console.log("WebSockets Connected");
         wsHandle.send("status");
@@ -80,8 +84,6 @@ function videoConnect() {
         buttonrefresh.removeEventListener("click", function() {}, false); // Remove all click listeners
         buttonrefresh.addEventListener("click", function() {
             setTimeout(videoConnect, 5000);
-            const navbarToggler = document.querySelector('.navbar-toggler');
-            navbarToggler.click();
             console.log("Reconnecting video...");
         }, false);
     }
@@ -94,8 +96,6 @@ function socketConnect() {
         buttonSocket.addEventListener("click", function() {
             initWebSocket();
             videoConnect();
-            const navbarToggler = document.querySelector('.navbar-toggler');
-            navbarToggler.click();
         }, false);
     }
     initWebSocket();
@@ -267,19 +267,30 @@ function resize() {
     background();
     joystick(width / 2, height / 2);
 }
+
+function joystickSize() {
+    let size = RADIUS+20;
+    if (size*2>width) {
+        size = width/3 - 20;
+    }
+    if (size*2>height) {
+        size = height/3 - 20;
+    }
+    return size;
+}
 // Draw the whole background and the central joystick position
 function background() {
     xOrigin = width / 2;
     yOrigin = height / 2;
     ctx.beginPath();
-    ctx.arc(xOrigin, yOrigin, RADIUS + 20, 0, Math.PI * 2, true);
+    ctx.arc(xOrigin, yOrigin, joystickSize(), 0, Math.PI * 2, true);
     ctx.fillStyle = CURSORCOLORSHADOW;
     ctx.fill();
 }
 // Draw current joystick position
 function joystick(width, height) {
     ctx.beginPath();
-    ctx.arc(width, height, RADIUS, 0, Math.PI * 2, true);
+    ctx.arc(width, height, joystickSize(), 0, Math.PI * 2, true);
     ctx.fillStyle = CURSORCOLORINNER;
     ctx.fill();
     ctx.strokeStyle = CURSORCOLOROUTER;
