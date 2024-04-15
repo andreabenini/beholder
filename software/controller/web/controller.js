@@ -1,4 +1,5 @@
 // Module attributes
+let wsHandle;
 let width, height, xOrigin, yOrigin;
 let oldX, oldY, oldSpeed, oldAngle
 let oldLeft  = 0;                           // Previous motors dutycycle
@@ -11,8 +12,6 @@ const CURSORSTEP = 20;
 
 // Cursor keys detection
 document.addEventListener("keydown", function(event) { 
-    console.log(coord);
-    console.log("Before");
     switch (event.key) {
         case "ArrowUp":
             if (coord.y < RADIUS) {
@@ -39,33 +38,70 @@ document.addEventListener("keydown", function(event) {
             cursorUpdate();
             break;
     }
-    console.log("After");
 });
 
 function cursorUpdate() {
-    console.log(coord);
+    // console.log(coord);
     // startDrawingCursor();
 }
 
-  
 
-// Websocket connection
-let wsHandle = new WebSocket('ws://' + SERVER + '/ws');
-wsHandle.onclose = function (event) {
-    console.log("WebSocket connection closed");
-}; /**/
-wsHandle.onerror = function (error) {
-    console.log('WebSocket Error ', error);
-    alert('WebSocket Error ', error);
-}; /**/
-wsHandle.onmessage = function (e) {
-    console.log('<', e.data);
-    wsHandle.Locked = false;
-}; /**/
-wsHandle.onopen = function () {
-    wsHandle.Locked = true;
-    wsHandle.send("status");
-}; /**/
+// Websocket connection (input controls)
+function initWebSocket() {
+    wsHandle = new WebSocket('ws://' + SERVER + '/ws');
+    wsHandle.onclose = function (event) {
+        console.log("WebSocket connection closed, reconnecting...");
+        wsHandle = null;
+        setTimeout(initWebSocket, 5000);
+        setTimeout(videoConnect,  5000);
+    }; /**/
+    wsHandle.onerror = function (error) {
+        console.log('WebSocket Error ', error);
+        alert('WebSocket Error ', error);
+    }; /**/
+    wsHandle.onmessage = function (e) {
+        console.log('<', e.data);
+        wsHandle.Locked = false;
+    }; /**/
+    wsHandle.onopen = function () {
+        wsHandle.Locked = true;
+        console.log("WebSockets Connected");
+        wsHandle.send("status");
+    }; /**/
+} /**/
+function videoConnect() {
+    // Video stream
+    let streamElement = document.getElementById('videostream');
+    streamElement.src = "http://" + SERVER + "/video";
+    console.log("Video stream connected");
+    // Refresh button
+    let buttonrefresh = document.getElementById('videorefresh');
+    if (buttonrefresh && buttonrefresh.addEventListener) {
+        buttonrefresh.removeEventListener("click", function() {}, false); // Remove all click listeners
+        buttonrefresh.addEventListener("click", function() {
+            setTimeout(videoConnect, 5000);
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            navbarToggler.click();
+            console.log("Reconnecting video...");
+        }, false);
+    }
+} /**/
+function socketConnect() {
+    // Socket button
+    let buttonSocket = document.getElementById('connect');
+    if (buttonSocket && buttonSocket.addEventListener) {
+        buttonSocket.removeEventListener("click", function() {}, false); // Remove all click listeners
+        buttonSocket.addEventListener("click", function() {
+            initWebSocket();
+            videoConnect();
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            navbarToggler.click();
+        }, false);
+    }
+    initWebSocket();
+    videoConnect();
+}
+
 /**
  * Send data to the robot through WebSocket interface
  * @param {int} x cursor position
@@ -76,21 +112,44 @@ wsHandle.onopen = function () {
  * @see Avoid using wsHandle.send() directly, use this function instead.
  *      Mutex response is properly handled with [wsHandle.Locked]
  */
-wsHandle.write = function(x, y, speed) {
-    if (wsHandle.Locked && (x!==y && y!==0)) { return; }
+function command(x, y, speed) {
     wsHandle.Locked = true;
-    speed /= 100;       // Speed range: 0..1
+    speed = progressiveSpeed(speed);        // Speed range: 0..1
     let [left, right] = controlRobot(x, y, speed);
     if (left!=oldLeft || right!=oldRight) { // Same speed as before? Do not send it again
         console.log(`> ${x},${y} [${speed}]    Motors: `+String([left, right]));
-        wsHandle.Locked = true;             // Possible race condition on x==y==0
         wsHandle.send("m "+left+" "+right);
+        oldLeft  = left;
+        oldRight = right;
     } else {
-        console.log(`- ${x},${y} [${speed}]    Motors: `+String([left, right]));
+        wsHandle.Locked = false;
     }
-    oldLeft  = left;
-    oldRight = right;
 }; /**/
+
+
+/**
+ * Alter speed with linear interpolation from the joystick bot control
+ * @param {int} speed Real speed detected from virtual joystick
+ */
+function progressiveSpeed(speed) {
+    switch (true) {
+        case (speed==0):     // 0
+            break;
+        case (speed<25):    // 1..24    ->  1..50
+            speed =  1 + ((speed-1 ) * 49 / 23);
+            break;
+        case (speed<50):    // 25..49   -> 50..75
+            speed = 50 + ((speed-25) * 25 / 24);
+            break;
+        case (speed<75):    // 50..74   -> 75..90
+            speed = 75 + ((speed-50) * 15 / 24);
+            break;
+        default:            // 75..100  -> 90..100  ((speed-75) * (100-90) / (100-75))
+            speed = 90 + ((speed-75) * 10 / 25);
+            break;
+    }
+    return (speed/100).toFixed(2);      // Adapt range in the [0..1] scale
+} /**/
 
 
 /**
@@ -153,13 +212,16 @@ function controlRobot(x, y, speed) {
 
 //
 function send(x, y, speed, angle) {
+    if (wsHandle==null) return;
     if (x < oldX - CURSORTOLERANCE || x > oldX + CURSORTOLERANCE ||
         y < oldY - CURSORTOLERANCE || y > oldY + CURSORTOLERANCE ||
         speed < oldSpeed - CURSORTOLERANCE || speed > oldSpeed + CURSORTOLERANCE ||
         angle < oldAngle - CURSORTOLERANCE || angle > oldAngle + CURSORTOLERANCE) {
             
             updateCoordinates(x, y, speed, angle);
-            wsHandle.write(x, y, speed);
+            if (!wsHandle.Locked || (x===y && y===0)) {
+                command(x, y, speed);
+            }      
     }
 }; /**/
 
@@ -177,14 +239,13 @@ function updateCoordinates(xRelative, yRelative, speed, angle) {
 
 // Init on page load()
 window.addEventListener('load', () => {
-    const streamElement = document.getElementById('videostream');
-    streamElement.src = "http://" + SERVER + "/video";
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
     container = canvas.parentNode;
     if (container && container.nodeName === 'DIV') {
         resize();
     }
+    socketConnect();
     document.addEventListener('mousedown',   startDrawingMouse);
     document.addEventListener('mouseup',     stopDrawing);
     document.addEventListener('mousemove',   Draw);
@@ -202,7 +263,7 @@ function resize() {
     height = container.offsetHeight - 40;
     ctx.canvas.width = width;
     ctx.canvas.height = height;
-    console.log(width, height);
+    console.log("Joystick area size: "+String([width, height]));
     background();
     joystick(width / 2, height / 2);
 }
@@ -232,8 +293,6 @@ function getPosition(event) {
     let mouse_y = event.clientY || event.touches[0].clientY;
     coord.x = mouse_x - canvas.offsetLeft;
     coord.y = mouse_y - canvas.offsetTop;
-
-    console.log(coord);     // DEBUG
 }
 // As it said, detect if it's in the circle or not
 function isItInTheCircle() {

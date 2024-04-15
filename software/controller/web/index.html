@@ -1,23 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
-
 <head>
-    <meta charset="utf-8">
-    <script src="./js/color-modes.js"></script>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>beholder controller</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Favicons -->
     <link rel="apple-touch-icon" href="favicon.png" sizes="180x180">
     <link rel="icon" href="favicon.png" sizes="32x32" type="image/png">
     <link rel="icon" href="favicon.png" sizes="16x16" type="image/png">
     <link rel="icon" href="favicon.png">
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="/index.css">
+    <!-- Scripts -->
+    <script src="./js/color-modes.js"></script>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
 
     <script src="configuration.js"></script>
     <script src="controller.js"></script>
+    <script type="text/javascript" src="https://livejs.com/live.js"></script>   <!-- TODO: Remove once done -->
 </head>
-
 <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
         <symbol id="check2" viewBox="0 0 16 16">
@@ -77,23 +80,49 @@
             </li>
         </ul>
     </div>
-
     <!-- navbar -->
     <nav class="navbar bg-body-tertiary pagenavbar">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="../../../logo.png" class="d-inline-block align-text-top page-icon">
-                beholder controller
-            </a>
+        <div class="container-fluid pagenavbar">
+            <!-- Hamburger Menu -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Logo -->
+            <div class="d-flex align-items-center">
+                <img src="logo.png" alt="logo" class="d-inline-block align-text-top page-icon"
+                     data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-brand">beholder controller</span>
+            </div>
+            <!-- Center label -->
+            <span class="navbar-text mx-auto">
+                &nbsp;
+            </span>
 
-            <ul class="nav" style="padding-right: 200px;">
+            <ul class="nav" style="padding-right: 80px;">
                 <li class="nav-item coordinates">X <span id="xCoordinate"></span></li>
                 <li class="nav-item coordinates">Y <span id="yCoordinate"></span></li>
                 <li class="nav-item coordinates">Speed <span id="speed"></span></li>
                 <li class="nav-item coordinates">Angle <span id="angle"></span></li>
             </ul>
+        
+            <!-- Left-aligned menu items -->
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                <li class="nav-item">
+                    <button type="button" class="btn btn-secondary btn-sm controllerbuttons" id="connect">
+                        <i class="bi bi-plugin"></i> Reconnect
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary btn-sm controllerbuttons" id="videorefresh">
+                        <i class="bi bi-arrow-repeat"></i> Video Refresh
+                    </button>
+                </li>
+                </ul>
+            </div>
         </div>
     </nav>
+
     <div class="container-fluid">
         <div class="row h-100">
             <div class="col-md-6 p-3 bg-body-tertiary justify-content-center align-items-center" id="video">
@@ -104,6 +133,10 @@
             </div>
         </div>
     </div>
-    <script src="./js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        console.log("Page loaded");
+    </script>
 </body>
 </html>

@@ -117,3 +117,10 @@
     /* height: 100%;       Stretch image to fill the div */
     max-height: 100%;  /* Limit image height to div height */
 }
+
+.controllerbuttons {
+    width: 200px;
+    text-align: left;
+    padding-left: 30px;
+    padding-right: 50px;
+}
