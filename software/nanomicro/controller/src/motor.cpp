@@ -20,16 +20,18 @@ void motorInit() {
 
 void motorPWM(int8_t dutyCycle, uint8_t pin1, uint8_t pin2) {
     uint8_t pwm = round(abs(2.55 * dutyCycle));
-    Serial.print(pin1==MOTOR1_IN_1?"1":"2");
+    Serial.print(pin1==MOTOR1_IN_1? '1': '2');
+    Serial.print(' ');
     if (dutyCycle < 0) {        // Backward
         digitalWrite(pin1, LOW);
         analogWrite(pin2, pwm);
-        Serial.print(" B ");
+        Serial.print('B');
     } else {                    // Stop or forward
         digitalWrite(pin2, LOW);
         analogWrite(pin1, pwm);
-        Serial.print(" F ");
+        Serial.print('F');
     }
+    Serial.print(' ');
     Serial.print(pwm);
 } /**/
 
@@ -43,7 +45,7 @@ void motor(uint8_t motorNumber, int8_t dutyCycle) {
     switch (motorNumber) {
     case 0:
         motorPWM(dutyCycle, MOTOR1_IN_1, MOTOR1_IN_2);
-        Serial.print(" ");
+        Serial.print(' ');
         motorPWM(dutyCycle, MOTOR2_IN_3, MOTOR2_IN_4);
         break;
     case 1:
