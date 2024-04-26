@@ -4,6 +4,7 @@
 // Program defines
 #include "main.h"
 #include "motor.h"
+#include "display.h"
 
 
 #define SYSTEM_LED 13
@@ -34,14 +35,15 @@ const char PROGMEM STR_HELP[]       = "Commands:\n"
  */
 void commandDetect() {
     char *command;
+    char spaceString[] PROGMEM = " ";
     memcpy(bufferInput, buffer, strlen(buffer)+1);
     bufferInput[strlen(buffer)] = '\0';
-    command = strtok(bufferInput, " ");
+    command = strtok(bufferInput, spaceString);
 
     // cmd: <m0: bothMotors> [-100..0..100: DutyCycle Motor1] [-100..0..100: DutyCycle Motor2]
     if (!strcmp_P(command, CMD_MOTOR3)) {
-        int dutyCycle1 = atoi(strtok(NULL, " "));
-        int dutyCycle2 = atoi(strtok(NULL, " "));
+        int dutyCycle1 = atoi(strtok(NULL, spaceString));
+        int dutyCycle2 = atoi(strtok(NULL, spaceString));
         if (dutyCycle1 < -100 || dutyCycle1 > 100) {
             dutyCycle1 = 0;
         }
@@ -49,14 +51,14 @@ void commandDetect() {
             dutyCycle2 = 0;
         }
         motor(1, dutyCycle1);
-        Serial.print(" ");
+        Serial.print(' ');
         motor(2, dutyCycle2);
         Serial.println();
 
     // cmd: [motor|m] [0|1|2] [-100..0..100: DutyCycle Motor]
     } else if (!strcmp_P(command, CMD_MOTOR1) || !strcmp_P(command, CMD_MOTOR2)) {
-        byte motorN    = atoi(strtok(NULL, " "));
-        int  dutyCycle = atoi(strtok(NULL, " "));
+        byte motorN    = atoi(strtok(NULL, spaceString));
+        int  dutyCycle = atoi(strtok(NULL, spaceString));
         if (motorN > 2) {
             Serial.print((const __FlashStringHelper *)STR_ERROR);
             Serial.println(buffer);
@@ -98,12 +100,15 @@ void blink(int8_t times) {
  * Constructor
  */
 void setup() {
+    displayInit();
+    displayEyes(LOGO_EYE_SLEEPY);
     Serial.begin(115200);
     Serial.println((const __FlashStringHelper *)STR_READY);
     memset(buffer,      0x00, sizeof(buffer));
     memset(bufferInput, 0x00, sizeof(bufferInput));
     pinMode(SYSTEM_LED, OUTPUT);
     blink(3);
+    displayEyes(LOGO_EYE_NORMAL);
 } /**/
 
 /**
@@ -130,5 +135,5 @@ void loop() {
             break;
         }
     }
-    delay(500);
+    delay(50);
 } /**/
