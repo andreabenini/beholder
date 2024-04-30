@@ -16,6 +16,7 @@ software/esp32/ota_server/lib64
 
 # exclude software/esp32 samples
 software/samples
+software/bt_test
 
 # Temporary files, tests, download directories
 **/tmp*
