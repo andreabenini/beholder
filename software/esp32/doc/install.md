@@ -13,6 +13,11 @@ cd components
 git clone https://github.com/espressif/esp32-camera
 cd ..
 
+# Install PS3 Controller BT libraries
+cd components
+git clone https://github.com/jvpernis/esp32-ps3.git ps3
+cd ..
+
 # Add user to 'uucp' in /etc/group
 
 # Install ESP-IDF
@@ -20,20 +25,24 @@ cd ..
 ```
 
 ### **Enter virtual environment**
-```sh
-# . ./export.sh
-. $HOME/esp/esp-idf/export.sh
-idf.py --help
-# Examples in:  $HOME/esp/esp-idf/examples
-```
+This allows you to:
+- Have `$IDF_PATH` variable set
+- Have access to `idf.py`, `esptool.py` and similar utilities
+- Just source the `export.sh` script and try `idf.py`
+  ```sh
+  # . ./export.sh
+  . $HOME/esp/esp-idf/export.sh
+  idf.py --help
+  # Examples in:  $HOME/esp/esp-idf/examples
+  ```
 
 ### **Create and build a sample project**
-```sh
-cd ~/esp
-cp -r $IDF_PATH/examples/get-started/hello_world .
-cd hello_world
-idf.py build
-```
+  ```sh
+  cd ~/esp
+  cp -r $IDF_PATH/examples/get-started/hello_world .
+  cd hello_world
+  idf.py build
+  ```
 
 ## Visual Studio Plugin: "Espressif IDF"
 - Install the visual studio plugin from **Extensions**, it's called "Espressif IDF"
