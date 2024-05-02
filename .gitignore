@@ -5,6 +5,8 @@
 # esp-cam main project, ignore working directories
 software/esp32/master/.devcontainer
 software/esp32/master/build
+# sensitive information
+software/esp32/master/main/secret.h
 
 # python venv for testing software/controller/cli
 software/controller/cli/cli.env
@@ -30,10 +32,3 @@ downloads
 *.kicad*
 beholder-backups
 fp-info-cache
-
-
-## Remove once done
-software/controller
-software/esp32
-software/host
-software/nanomicro
