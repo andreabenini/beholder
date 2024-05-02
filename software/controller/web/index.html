@@ -2,7 +2,7 @@
 <html lang="en" data-bs-theme="auto">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>beholder controller</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/bootstrap-icons.min.css" rel="stylesheet">
@@ -132,12 +132,14 @@
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="row h-100">
-            <div class="col-md-6 p-3 bg-body-tertiary justify-content-center align-items-center" id="video">
-                <img src="" id="videostream">
+    <div class="container">
+        <div class="row">
+            <!--  col-md-6 justify-content-center align-items-center -->
+            <div class="col-xs-6" id="video">
+                <img id="videostream">
             </div>
-            <div class="col-md-6 p-3 bg-body-tertiary">
+            <!-- col-md-6 -->
+            <div class="col-xs-6 ">
                 <canvas id="canvas" name="game"></canvas>
             </div>
         </div>

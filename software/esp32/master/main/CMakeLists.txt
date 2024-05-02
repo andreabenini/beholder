@@ -1,1 +1,12 @@
-idf_component_register(SRCS "serial.c" "main.c" "camera.c" "httpd.c" "wifi.c" "firmware.c" INCLUDE_DIRS ".")
+idf_component_register(
+    SRCS
+        "serial.c"
+        "main.c"
+        "camera.c"
+        "httpd.c"
+        "wifi.c"
+        "firmware.c"
+        "controller.c"
+    INCLUDE_DIRS
+        "."
+)

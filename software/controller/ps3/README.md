@@ -11,3 +11,9 @@ in the PS3 controller should be the same of the bot firmware, for example:
 ```sh
 ./sixpair 1a:2b:3c:01:01:01
 ```
+
+## ps3demo.ino
+Arduino based test utility for dealing with ps3 controllers.  
+This sample uses the arduino IDE and provide a working demo for testing
+controller pairing and basic events from keys and thumbsticks.
+
