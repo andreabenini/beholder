@@ -32,7 +32,10 @@ python $IDF_PATH/components/esptool_py/esptool/esptool.py --chip esp32 --port /d
 ```
 
 ### Flashing software
+- Follow **Enter virtual environment** instructions suggested in [install.md](../../doc/install.md)
+- `$IDF_PATH` should now be available as well as ESP tools suitable for flashing the device
 ```sh
+cd software/esp32/master
 export PORT=/dev/$(dmesg | grep -E 'pl2303.*ttyUSB' | tail -n 1 | awk '{print $NF}'); echo $PORT
 
 # Partition OTA_0 only
