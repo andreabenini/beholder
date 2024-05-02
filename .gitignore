@@ -14,10 +14,6 @@ software/esp32/ota_server/*.*
 software/esp32/ota_server/lib64
 !software/esp32/ota_server/README.md
 
-# exclude software/esp32 samples
-software/samples
-software/bt_test
-
 # Temporary files, tests, download directories
 **/tmp*
 downloads
@@ -34,3 +30,10 @@ downloads
 *.kicad*
 beholder-backups
 fp-info-cache
+
+
+## Remove once done
+software/controller
+software/esp32
+software/host
+software/nanomicro
