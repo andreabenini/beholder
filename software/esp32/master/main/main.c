@@ -61,7 +61,7 @@ void app_main() {
     // Serial UART setup
     serialInit();
     xTaskCreate(serialTask, "serial_task", 2048, NULL, 10, NULL);
-    controllerInit();                  // Bluetooth controller setup
+    controllerConnect();                // Bluetooth controller setup
     cameraStart();                      // Camera setup
     httpdInit();                        // Starting HTTP server
 #endif
