@@ -714,8 +714,11 @@ void httpdInit() {
     httpd_handle_t server = NULL;
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT,   IP_EVENT_STA_GOT_IP,         &handlerConnect,    &server));
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &handlerDisconnect, &server));
-
-    startAsyncRequestWorkers();
     server = httpServerStart();
-    ESP_LOGI(TAG_APP, "ESP32 CAM Web Server is up and running\n");
+    if (server == NULL) {
+        ESP_LOGE(TAG_APP, "Cannot start web Server");
+    } else {
+        ESP_LOGI(TAG_APP, "ESP32 CAM Web Server is up and running");
+        startAsyncRequestWorkers();
+    }
 } /**/
