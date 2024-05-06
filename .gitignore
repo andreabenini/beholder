@@ -8,6 +8,9 @@ software/esp32/master/build
 # sensitive information
 software/esp32/master/main/secret.h
 
+# ESP32-C3 supermini
+software/esp32/c3supermini
+
 # python venv for testing software/controller/cli
 software/controller/cli/cli.env
 # esp OTA python sample server for uploading the firmware
