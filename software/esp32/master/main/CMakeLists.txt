@@ -6,7 +6,6 @@ idf_component_register(
         "httpd.c"
         "wifi.c"
         "firmware.c"
-        "controller.c"
     INCLUDE_DIRS
         "."
 )
