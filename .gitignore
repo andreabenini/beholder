@@ -11,6 +11,9 @@ software/esp32/master/main/secret.h
 # ESP32-C3 supermini
 software/esp32/c3supermini
 
+# sixpair binary utility
+software/controller/ps3/sixpair
+
 # python venv for testing software/controller/cli
 software/controller/cli/cli.env
 # esp OTA python sample server for uploading the firmware
