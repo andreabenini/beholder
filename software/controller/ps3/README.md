@@ -20,8 +20,18 @@ in the PS3 controller should be the same of the bot firmware, for example:
 - Compile with: `gcc sixpair.c -lusb -o sixpair` or use `make.sh` provided utility
 
 
-## ps3demo.ino
-Arduino based test utility for dealing with ps3 controllers.  
-This sample uses the arduino IDE and provide a working demo for testing
-controller pairing and basic events from keys and thumbsticks.
+## Arduino demo
+- Open Arduino IDE
+- Menu File/Preferences, field: _"Additional Boards Manager URLs"_, add this board info:
+    > https://dl.espressif.com/dl/package_esp32_index.json
+- Press **OK** to confirm
+- Menu _Tools/Boards/Board Manager_, search _"esp32"_ and select proper board: esp32-c3 or whatever
+- Press **Install** button and then close the board manager with the **Close** button
+- Menu _Tools/Manage Libraries_, search: _"ps3 controller host"_ and select the
+    "Jeffrey van Pernis" library, press **Install** button and **Close** once done
+- Open _"arduino_ps3/arduino_ps3.ino"_ sketch with Arduino IDE, verify, compile and upload as usual
+    > #### arduino_ps3.ino
+    > Arduino based test utility for dealing with ps3 controllers.
+    > This sample uses the arduino IDE and provide a working demo for testing
+    > controller pairing and basic events from keys and thumbsticks.
 
