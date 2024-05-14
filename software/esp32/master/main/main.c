@@ -33,7 +33,6 @@
 #include "httpd.h"
 #include "camera.h"
 #include "serial.h"
-#include "controller.h"
 
 
 
@@ -61,7 +60,6 @@ void app_main() {
     // Serial UART setup
     serialInit();
     xTaskCreate(serialTask, "serial_task", 2048, NULL, 10, NULL);
-    controllerConnect();                // Bluetooth controller setup
     cameraStart();                      // Camera setup
     httpdInit();                        // Starting HTTP server
 #endif
