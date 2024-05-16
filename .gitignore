@@ -9,7 +9,7 @@ software/esp32/master/build
 software/esp32/master/main/secret.h
 
 # ESP32-C3 supermini
-software/esp32/c3supermini
+software/esp32/worker
 
 # sixpair binary utility
 software/controller/ps3/sixpair
