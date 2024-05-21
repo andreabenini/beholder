@@ -1,4 +1,13 @@
 #include <Ps3Controller.h>
+/*
+ *  Configuration Setup
+ *      - ESP32-CAM
+ *          Board: AI Thinker ESP32-CAM
+ *          Library Manager:
+ *              - Install: "ps3 controller host"
+ */
+//#define CONTROLLER_MAC  "1a:2b:3c:01:01:01"       // This will always work (it's not an unicast address)
+#define CONTROLLER_MAC  "70:04:1d:93:89:a6"       // Device specific, set yours here
 
 int player = 0;
 int battery = 0;
@@ -197,8 +206,7 @@ void setup() {
     Serial.println("setup() Begin");
     Ps3.attach(notify);
     Ps3.attachOnConnect(onConnect);
-    // Ps3.begin("1a:2b:3c:01:01:01");             // This will always work (it's not an unicast address)
-    Ps3.begin("70:04:1d:93:89:a6");             // Device specific, set yours here
+    Ps3.begin(CONTROLLER_MAC);             // Device specific, set yours here
     Serial.println("setup() Ready");
 } /**/
 
