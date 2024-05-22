@@ -93,3 +93,9 @@ suitable for the device
 ```sh
 idf.py partition-table
 ```
+
+## Monitor
+```sh
+# Adapt to your current needs (mostly: port, baud rate)
+$HOME/.espressif/python_env/idf5.3_py3.11_env/bin/python $IDF_PATH/tools/idf_monitor.py -p /dev/ttyACM0 -b 115200
+```
