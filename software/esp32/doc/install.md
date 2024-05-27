@@ -33,6 +33,12 @@ This allows you to:
   # . ./export.sh
   . $HOME/esp/esp-idf/export.sh
   idf.py --help
+
+  # Set MCU target as esp32c3
+  idf.py set-target esp32c3
+  # To get a complete list of possible target use this one:
+  idf.py --list-targets
+  
   # Examples in:  $HOME/esp/esp-idf/examples
   ```
 
