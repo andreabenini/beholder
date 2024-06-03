@@ -3,20 +3,28 @@
 No visual studio code plugins are stricly required, you can use the whole environment from command line:
 ```sh
 # Install ESP-IDF
+IDF_PATH=$HOME/esp/esp-idf
 mkdir $HOME/esp
 cd esp
 git clone --recursive https://github.com/espressif/esp-idf.git
-cd esp-idf
+cd $IDF_PATH
 
 # Install ESP32 Camera libraries
 cd components
 git clone https://github.com/espressif/esp32-camera
-cd ..
+cd $IDF_PATH
 
 # Install PS3 Controller BT libraries
 cd components
 git clone https://github.com/jvpernis/esp32-ps3.git ps3
-cd ..
+cd $IDF_PATH
+
+# Install btstack BT libraries
+cd $IDF_PATH/..
+git clone git@github.com:bluekitchen/btstack.git
+cd btstack/port/esp32
+./integrate_btstack.py
+cd $IDF_PATH
 
 # Add user to 'uucp' in /etc/group
 
