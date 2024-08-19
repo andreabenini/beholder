@@ -1,0 +1,6 @@
+# Ignoring esp-idf tools config directories
+.devcontainer/
+.vscode/
+
+# Build directory
+build/
