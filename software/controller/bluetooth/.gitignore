@@ -1,6 +1,7 @@
 # Ignoring esp-idf tools config directories
 .devcontainer/
-.vscode/
+# Storing on git vscode configurations too
+#.vscode/
 
 # Build directory
 build/
