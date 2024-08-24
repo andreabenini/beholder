@@ -22,3 +22,14 @@ Below is short explanation of remaining files in the project folder.
 ```
 Additionally, the sample project contains Makefile and component.mk files, used for the legacy Make based build system. 
 They are not used or needed when building with CMake and idf.py.
+
+## sdkconfig
+- `sdkconfig` file will be automatically generated with `idf.py set-target esp32` command and it's based on architecture feature
+    related configuration `sdkconfig.defaults.*` files
+
+## bluetooth
+gamepad information
+```txt
+    BT : a0:5a:5e:11:ac:ff, COD: major: PERIPHERAL, minor: 2, service: 0x001, RSSI: -70, NAME: Wireless Controller
+                            RSSI: -70, USAGE: GENERIC, COD: PERIPHERAL[GAMEPAD] srv 0x001, UUID16: 0x0000, NAME: Wireless Controller
+```
