@@ -21,7 +21,8 @@
 // Camera configuration
 // Program configuration
 #define TAG_APP                     "BT Demo"
-// #define BOOTLOADER_ONLY
-
+#define SCAN_DURATION_SECONDS       5
+#define BT_CONTROLLER               {0xA0, 0x5A, 0x5E, 0x11, 0xAC, 0xFF}
+// const uint8_t *bda = esp_hidh_dev_bda_get(param->battery.dev);
 
 #endif
