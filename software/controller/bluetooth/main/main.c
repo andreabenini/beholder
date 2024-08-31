@@ -97,7 +97,8 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id, void *
     }
     case ESP_HIDH_INPUT_EVENT: {
         const uint8_t *bda = esp_hidh_dev_bda_get(param->input.dev);
-        ESP_LOGI(TAG_APP, ESP_BD_ADDR_STR " INPUT: %8s, MAP: %2u, ID: %3u, Len: %d, Data:", ESP_BD_ADDR_HEX(bda), esp_hid_usage_str(param->input.usage), param->input.map_index, param->input.report_id, param->input.length);
+        ESP_LOGI(TAG_APP, " INPUT: %8s, MAP: %2u, ID: %3u, Len: %d", 
+                            esp_hid_usage_str(param->input.usage), param->input.map_index, param->input.report_id, param->input.length);
         ESP_LOG_BUFFER_HEX(TAG_APP, param->input.data, param->input.length);
         break;
     }
@@ -121,73 +122,77 @@ void hidh_callback(void *handler_args, esp_event_base_t base, int32_t id, void *
 } /**/
 
 
-void hid_demo_task(void *pvParameters) {
+void hidDetectionTask(void *pvParameters) {
     size_t results_len = 0;
-    esp_hid_scan_result_t *results = NULL;
-    ESP_LOGI(TAG_APP, "hid_demo_task() Scanning... (%ds)", SCAN_DURATION_SECONDS);
-    //start scan for HID devices
-    esp_hid_scan(SCAN_DURATION_SECONDS, &results_len, &results);
-    ESP_LOGI(TAG_APP, "hid_demo_task() Scanning ended, found %u results", results_len);
-    if (results_len) {
-        esp_hid_scan_result_t *r = results;
-        esp_hid_scan_result_t *cr = NULL;
-        while (r) {
-            printf("  -> %s " ESP_BD_ADDR_STR ", RSSI: %d, USAGE: %s, ", 
-                    (r->transport == ESP_HID_TRANSPORT_BLE) ? "BLE" : "BT ", ESP_BD_ADDR_HEX(r->bda), r->rssi, esp_hid_usage_str(r->usage));
+    esp_hid_scan_result_t *results;
+    while (results_len == 0) {      // Keep it here until a peripheral is detected
+        results = NULL;
+        ESP_LOGI(TAG_APP, "hidDetectionTask() Scanning begin... (duration %ds)", SCAN_DURATION_SECONDS);
+        //start scan for HID devices
+        esp_hid_scan(SCAN_DURATION_SECONDS, &results_len, &results);
+        ESP_LOGI(TAG_APP, "hidDetectionTask() Scanning end, found %u results", results_len);
+    }
+    ESP_LOGI(TAG_APP, "hidDetectionTask() Found [%u] results", results_len);
+    esp_hid_scan_result_t *r = results;
+    esp_hid_scan_result_t *cr = NULL;
+    while (r) {
+        printf("  -> %s " ESP_BD_ADDR_STR ", RSSI: %d, USAGE: %s, ", 
+                (r->transport == ESP_HID_TRANSPORT_BLE) ? "BLE" : "BT ", ESP_BD_ADDR_HEX(r->bda), r->rssi, esp_hid_usage_str(r->usage));
 #if CONFIG_BT_BLE_ENABLED
-            if (r->transport == ESP_HID_TRANSPORT_BLE) {
-                cr = r;
-                printf("APPEARANCE: 0x%04x, ", r->ble.appearance);
-                printf("ADDR_TYPE: '%s', ", ble_addr_type_str(r->ble.addr_type));
-            }
+        if (r->transport == ESP_HID_TRANSPORT_BLE) {
+            cr = r;
+            printf("APPEARANCE: 0x%04x, ", r->ble.appearance);
+            printf("ADDR_TYPE: '%s', ", ble_addr_type_str(r->ble.addr_type));
+        }
 #endif /* CONFIG_BT_BLE_ENABLED */
 #if CONFIG_BT_NIMBLE_ENABLED
-            if (r->transport == ESP_HID_TRANSPORT_BLE) {
-                cr = r;
-                printf("APPEARANCE: 0x%04x, ", r->ble.appearance);
-                printf("ADDR_TYPE: '%d', ", r->ble.addr_type);
-            }
+        if (r->transport == ESP_HID_TRANSPORT_BLE) {
+            cr = r;
+            printf("APPEARANCE: 0x%04x, ", r->ble.appearance);
+            printf("ADDR_TYPE: '%d', ", r->ble.addr_type);
+        }
 #endif /* CONFIG_BT_BLE_ENABLED */
 #if CONFIG_BT_HID_HOST_ENABLED
-            if (r->transport == ESP_HID_TRANSPORT_BT) {
-                cr = r;
-                printf("COD: %s[", esp_hid_cod_major_str(r->bt.cod.major));
-                esp_hid_cod_minor_print(r->bt.cod.minor, stdout);
-                printf("] srv 0x%03x, ", r->bt.cod.service);
-                print_uuid(&r->bt.uuid);
-                printf(", ");
-                if (strncmp(r->name, remote_device_name, strlen(remote_device_name)) == 0) {
-                    break;
-                }
+        if (r->transport == ESP_HID_TRANSPORT_BT) {
+            cr = r;
+            printf("COD: %s[", esp_hid_cod_major_str(r->bt.cod.major));
+            esp_hid_cod_minor_print(r->bt.cod.minor, stdout);
+            printf("] srv 0x%03x, ", r->bt.cod.service);
+            print_uuid(&r->bt.uuid);
+            printf(", ");
+            if (strncmp(r->name, remote_device_name, strlen(remote_device_name)) == 0) {
+                break;
             }
+        }
 #endif /* CONFIG_BT_HID_HOST_ENABLED */
-            printf("NAME: %s\n", r->name ? r->name : "");
-            r = r->next;
-        }
-#if CONFIG_BT_HID_HOST_ENABLED
-        // BT Demo: Device: Wireless Controller, Remote:HID Mouse Example
-        // TODO:
-        // esp_bd_addr_t controller = BT_CONTROLLER;
-        // ESP_LOGW(TAG_APP, "%d", bdacmp((esp_bd_addr_t) BT_CONTROLLER, cr->bda));
-        // ESP_LOGW(TAG_APP, "%d", bdacmp(controller, cr->bda));
-
-        ESP_LOGI(TAG_APP, "Device: %s, Remote:%s", cr->name, remote_device_name);
-        // if (cr && strncmp(cr->name, remote_device_name, strlen(remote_device_name)) == 0) {
-        if (cr && !bdacmp((esp_bd_addr_t) BT_CONTROLLER, cr->bda)) {
-            ESP_LOGI(TAG_APP, "esp_hidh_dev_open()");
-            esp_hidh_dev_open(cr->bda, cr->transport, cr->ble.addr_type);
-        } else {
-            ESP_LOGE(TAG_APP, "Device " ESP_BD_ADDR_STR " unknown", ESP_BD_ADDR_HEX(cr->bda));
-        }
-#else
-        if (cr) {
-            //open the last result
-            esp_hidh_dev_open(cr->bda, cr->transport, cr->ble.addr_type);
-        }
-#endif // CONFIG_BT_HID_HOST_ENABLED
-        //free the results
-        esp_hid_scan_results_free(results);
+        printf("NAME: %s\n", r->name ? r->name : "");
+        r = r->next;
     }
+
+#if CONFIG_BT_HID_HOST_ENABLED
+    // BT Demo: Device: Wireless Controller, Remote:HID Mouse Example
+    // TODO:
+    // esp_bd_addr_t controller = BT_CONTROLLER;
+    // ESP_LOGW(TAG_APP, "%d", bdacmp((esp_bd_addr_t) BT_CONTROLLER, cr->bda));
+    // ESP_LOGW(TAG_APP, "%d", bdacmp(controller, cr->bda));
+
+    ESP_LOGI(TAG_APP, "Device: %s, Remote:%s", cr->name, remote_device_name);
+    // if (cr && strncmp(cr->name, remote_device_name, strlen(remote_device_name)) == 0) {
+    if (cr && !bdacmp((esp_bd_addr_t) BT_CONTROLLER, cr->bda)) {
+        ESP_LOGI(TAG_APP, "esp_hidh_dev_open()");
+        esp_hidh_dev_open(cr->bda, cr->transport, cr->ble.addr_type);
+    } else {
+        ESP_LOGE(TAG_APP, "Device " ESP_BD_ADDR_STR " unknown", ESP_BD_ADDR_HEX(cr->bda));
+    }
+#else
+    if (cr) {
+        //open the last result
+        esp_hidh_dev_open(cr->bda, cr->transport, cr->ble.addr_type);
+    }
+#endif // CONFIG_BT_HID_HOST_ENABLED
+    //free the results
+    esp_hid_scan_results_free(results);
+    ESP_LOGI(TAG_APP, "Closing hidDetectionTask()");
     vTaskDelete(NULL);
 } /**/
 
@@ -238,5 +243,6 @@ void app_main(void) {
         ESP_LOGE(TAG_APP, "esp_nimble_enable() failed: %d", ret);
     }
 #endif
-    xTaskCreate(&hid_demo_task, "hid_task", 6 * 1024, NULL, 2, NULL);
+    // Create task for HID detection and connection
+    xTaskCreate(&hidDetectionTask, "hidTask", 6 * 1024, NULL, 2, NULL);
 } /**/
