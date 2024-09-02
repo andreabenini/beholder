@@ -486,12 +486,12 @@ static void bt_gap_event_handler(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_para
 
     // ACL connection complete status event
     case ESP_BT_GAP_ACL_CONN_CMPL_STAT_EVT:
-        ESP_LOGW(TAG_APP, "Connection complete,      TODO ==============================="); // TODO
+        ESP_LOGW(TAG_APP, "Connection complete,      TODO ==============================="); // TODO Manage the connection event, if needed
         break;
 
     // ACL disconnection complete status event
     case ESP_BT_GAP_ACL_DISCONN_CMPL_STAT_EVT:
-        ESP_LOGW(TAG_APP, "Disconnection complete,   TODO ==============================="); // TODO
+        ESP_LOGW(TAG_APP, "Disconnection complete,   TODO ==============================="); // TODO Manage the disconnection event, if needed
         break;
 
     default:
@@ -682,11 +682,18 @@ esp_err_t esp_hid_ble_gap_adv_init(uint16_t appearance, const char *device_name)
         .p_service_uuid = (uint8_t *)hidd_service_uuid128,
         .flag = 0x6,
     };
-    // FIXME: That was the original, moving to autobond to avoid:
-    //        E (xxx) BT_BTM: BTM_GetSecurityFlags false
-    //
-    // esp_ble_auth_req_t auth_req = ESP_LE_AUTH_REQ_SC_MITM_BOND;
-    esp_ble_auth_req_t auth_req = ESP_LE_AUTH_BOND;
+    // FIXME: trying to avoid:
+    //        "E (xxx) BT_BTM: BTM_GetSecurityFlags false"
+    //            - Security Flags [bit mask] (BTM_GetSecurityFlags)
+    //                  #define BTM_SEC_FLAG_AUTHENTICATED 0x02
+    //                  #define BTM_SEC_FLAG_ENCRYPTED 0x04
+    //                  #define BTM_SEC_FLAG_LKEY_KNOWN 0x10
+    //                  #define BTM_SEC_FLAG_LKEY_AUTHED 0x20
+    // - default:      esp_ble_auth_req_t auth_req = ESP_LE_AUTH_REQ_SC_MITM_BOND;
+    // - 1st attempt:  esp_ble_auth_req_t auth_req = ESP_LE_AUTH_BOND;
+    // - 2nd attempt:  esp_ble_auth_req_t auth_req = ESP_LE_AUTH_REQ_BOND_MITM;
+    // - 3rd attempt:  esp_ble_auth_req_t auth_req = ESP_LE_AUTH_REQ_SC_BOND;
+    esp_ble_auth_req_t auth_req = ESP_LE_AUTH_REQ_SC_MITM_BOND;
 
     //esp_ble_io_cap_t iocap = ESP_IO_CAP_OUT;//you have to enter the key on the host
     //esp_ble_io_cap_t iocap = ESP_IO_CAP_IN;//you have to enter the key on the device

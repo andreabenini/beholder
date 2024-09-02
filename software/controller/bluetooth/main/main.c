@@ -171,7 +171,7 @@ void hidDetectionTask(void *pvParameters) {
 
 #if CONFIG_BT_HID_HOST_ENABLED
     // BT Demo: Device: Wireless Controller, Remote:HID Mouse Example
-    // TODO:
+    // TODO: Detect device and pair+connect it
     // esp_bd_addr_t controller = BT_CONTROLLER;
     // ESP_LOGW(TAG_APP, "%d", bdacmp((esp_bd_addr_t) BT_CONTROLLER, cr->bda));
     // ESP_LOGW(TAG_APP, "%d", bdacmp(controller, cr->bda));
