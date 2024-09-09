@@ -1,0 +1,22 @@
+# TODO
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: beholder-frontend-ingress
+  namespace: beholder
+  annotations:
+    spec.ingressClassName: "traefik"
+    traefik.ingress.kubernetes.io/rule-type: "PathPrefixStrip"
+spec:
+  rules:
+  - host: oam.internal
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: beholder-frontend
+            port:
+              number: 80
+
