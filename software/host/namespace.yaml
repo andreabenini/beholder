@@ -1,0 +1,7 @@
+#
+# beholder Namespace and host side configuration
+#
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: beholder
